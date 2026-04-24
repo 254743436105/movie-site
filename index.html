@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOBIH — Watch Movies & TV Free</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#060608;
+  --s1:#0e0e18;
+  --s2:#14141f;
+  --acc:#ff3c5f;
+  --acc2:#ff8c42;
+  --gold:#ffd166;
+  --green:#25d366;
+  --text:#f2f0fc;
+  --muted:#6b6a80;
+  --border:rgba(255,255,255,0.07);
+  --glow:rgba(255,60,95,0.22);
+  --radius:14px;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--acc);border-radius:99px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(6,6,8,0.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;user-select:none}
+.logo b{-webkit-text-fill-color:var(--gold);color:var(--gold)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:var(--acc)}
+.nav-r{display:flex;align-items:center;gap:12px}
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;transition:border-color .2s,box-shadow .2s}
+.search-wrap:focus-within{border-color:var(--acc);box-shadow:0 0 0 3px var(--glow)}
+.search-wrap input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.82rem;width:160px}
+.search-wrap input::placeholder{color:var(--muted)}
+.btn-signin{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:opacity .2s,transform .15s}
+.btn-signin:hover{opacity:.85;transform:translateY(-1px)}
+
+/* ── TICKER ── */
+.ticker{background:var(--acc);overflow:hidden;padding:9px 0;margin-top:62px}
+.ticker-track{display:flex;gap:56px;white-space:nowrap;animation:ticker 28s linear infinite;width:max-content}
+.ticker-item{font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:10px}
+.ticker-item strong{color:#fff}
+.tdot{width:4px;height:4px;background:rgba(255,255,255,.45);border-radius:50%;display:inline-block}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── HERO ── */
+.hero{position:relative;min-height:88vh;display:flex;align-items:flex-end;padding:60px 32px 72px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 80% 70% at 65% 35%,rgba(255,60,95,.13) 0%,transparent 65%),
+  radial-gradient(ellipse 55% 55% at 85% 65%,rgba(255,140,66,.09) 0%,transparent 65%),
+  linear-gradient(180deg,transparent 35%,var(--bg) 100%);z-index:1}
+.hero-poster-svg{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;filter:brightness(.18) saturate(.6)}
+.hero-content{position:relative;z-index:2;max-width:600px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,60,95,.14);border:1px solid rgba(255,60,95,.3);border-radius:100px;padding:5px 14px;font-size:.7rem;font-weight:700;color:var(--acc);letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px;animation:fadeUp .5s ease both}
+.live-dot{width:6px;height:6px;background:var(--acc);border-radius:50%;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.2rem,8vw,6.2rem);line-height:.94;letter-spacing:.02em;margin-bottom:18px;animation:fadeUp .5s .08s ease both}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1rem;color:rgba(242,240,252,.68);line-height:1.65;max-width:460px;margin-bottom:28px;animation:fadeUp .5s .16s ease both}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .5s .24s ease both}
+.btn-play{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:none;border-radius:10px;padding:13px 26px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 8px 28px rgba(255,60,95,.35);text-decoration:none}
+.btn-play:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,60,95,.5)}
+.btn-browse{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.07);color:var(--text);border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:13px 26px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;backdrop-filter:blur(8px);transition:background .2s,border-color .2s;text-decoration:none}
+.btn-browse:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22)}
+.hero-numbers{display:flex;gap:24px;margin-top:28px;animation:fadeUp .5s .32s ease both}
+.hnum strong{font-family:'Space Mono',monospace;font-size:1.15rem;color:var(--gold);display:block}
+.hnum span{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.hero-pills{position:absolute;bottom:72px;right:32px;z-index:2;display:flex;flex-direction:column;gap:10px;animation:fadeUp .6s .4s ease both}
+.pill{background:rgba(14,14,24,.85);border:1px solid var(--border);border-radius:12px;padding:11px 16px;backdrop-filter:blur(12px);display:flex;align-items:center;gap:10px;font-size:.78rem}
+.pill .pi{font-size:1.1rem}
+.pill strong{display:block;font-weight:600;font-size:.82rem}
+.pill small{color:var(--muted);font-size:.68rem}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PERKS ── */
+.perks{display:flex;gap:14px;padding:0 32px;margin:52px 0 44px;flex-wrap:wrap}
+.perk{flex:1;min-width:160px;background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:13px;transition:border-color .2s,transform .2s;cursor:default}
+.perk:hover{border-color:rgba(255,60,95,.3);transform:translateY(-3px)}
+.perk-icon{font-size:1.5rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(255,60,95,.1);border-radius:10px;flex-shrink:0}
+.perk-text strong{display:block;font-size:.88rem;font-weight:600}
+.perk-text small{color:var(--muted);font-size:.72rem}
+
+/* ── CATEGORIES ── */
+.cats{display:flex;gap:9px;padding:0 32px;flex-wrap:wrap;margin-bottom:36px}
+.cat{background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:7px 16px;color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .18s;border:1px solid var(--border)}
+.cat:hover,.cat.on{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* ── SECTION ── */
+section{padding:48px 32px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:.05em}
+.sec-title span{color:var(--acc)}
+.see-all{color:var(--acc);font-size:.78rem;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;transition:letter-spacing .2s}
+.see-all:hover{letter-spacing:.12em}
+
+/* ── SCROLL ROW ── */
+.row-wrap{overflow-x:auto;scrollbar-width:none;padding-bottom:6px}
+.row-wrap::-webkit-scrollbar{display:none}
+.cards-row{display:flex;gap:15px;width:max-content}
+
+/* ── MOVIE CARD ── */
+.card{width:158px;border-radius:var(--radius);overflow:hidden;background:var(--s1);cursor:pointer;position:relative;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;flex-shrink:0}
+.card:hover{transform:translateY(-7px) scale(1.03);box-shadow:0 20px 48px rgba(0,0,0,.65),0 0 0 1px rgba(255,60,95,.28)}
+.card-poster{width:100%;height:236px;display:flex;align-items:flex-end;justify-content:flex-start;position:relative;overflow:hidden}
+.card-poster svg{position:absolute;inset:0;width:100%;height:100%}
+.card-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,6,8,.97) 0%,rgba(6,6,8,.2) 55%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;z-index:2}
+.card-play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);opacity:0;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;z-index:3;transition:all .22s cubic-bezier(.34,1.56,.64,1);box-shadow:0 6px 20px rgba(255,60,95,.5)}
+.card:hover .card-play-btn{transform:translate(-50%,-50%) scale(1);opacity:1}
+.cbadge{position:absolute;top:9px;left:9px;z-index:3;font-size:.62rem;font-weight:800;padding:3px 7px;border-radius:5px;letter-spacing:.06em;text-transform:uppercase}
+.cbadge.hd{background:var(--gold);color:#000}
+.cbadge.new{background:#22c55e;color:#fff}
+.cbadge.cam{background:var(--acc);color:#fff}
+.ctitle{font-weight:600;font-size:.83rem;line-height:1.3;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmeta{display:flex;align-items:center;gap:7px;font-size:.68rem;color:var(--muted)}
+.crating{color:var(--gold);font-weight:700}
+
+/* ── FEATURED ROW ── */
+.feat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.feat-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;aspect-ratio:16/9;transition:transform .25s,box-shadow .25s}
+.feat-card:hover{transform:translateY(-4px);box-shadow:0 24px 56px rgba(0,0,0,.7)}
+.feat-card svg{width:100%;height:100%;display:block;transition:transform .35s}
+.feat-card:hover svg{transform:scale(1.05)}
+.feat-over{position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,6,8,.88) 0%,transparent 65%);padding:18px;display:flex;flex-direction:column;justify-content:flex-end}
+.feat-genre{font-size:.68rem;color:var(--acc);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.feat-title{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:.04em;margin-bottom:5px}
+.feat-meta{display:flex;gap:10px;font-size:.72rem;color:rgba(242,240,252,.6)}
+.feat-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:rgba(255,60,95,.88);border-radius:50%;width:56px;height:56px;display:flex;align-items:center;justify-content:center;transition:transform .28s cubic-bezier(.34,1.56,.64,1)}
+.feat-card:hover .feat-play{transform:translate(-50%,-50%) scale(1)}
+
+/* ── GENRE TILES ── */
+.genre-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:11px}
+.genre-tile{border-radius:12px;padding:18px 14px;cursor:pointer;transition:transform .2s,filter .2s;display:flex;flex-direction:column;gap:7px}
+.genre-tile:hover{transform:translateY(-4px);filter:brightness(1.15)}
+.g-icon{font-size:1.7rem}
+.g-name{font-weight:600;font-size:.88rem}
+.g-count{font-size:.68rem;color:rgba(255,255,255,.55)}
+
+/* ── LIVE CHANNELS ── */
+.live-strip{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:22px 24px;display:flex;align-items:center;gap:22px;overflow-x:auto;scrollbar-width:none}
+.live-strip::-webkit-scrollbar{display:none}
+.chan{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:64px;cursor:pointer;transition:transform .2s}
+.chan:hover{transform:translateY(-4px)}
+.chan-logo{width:52px;height:52px;border-radius:12px;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.35rem;transition:border-color .2s}
+.chan:hover .chan-logo{border-color:var(--acc)}
+.chan-name{font-size:.67rem;color:var(--muted);text-align:center}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:480px;width:100%;position:relative;animation:fadeUp .3s ease}
+.modal h2{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:.06em;margin-bottom:8px}
+.modal h2 span{color:var(--acc)}
+.modal p{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:22px}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.07);border:none;color:var(--text);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:background .2s}
+.modal-close:hover{background:rgba(255,60,95,.2)}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.modal-btn{flex:1;min-width:120px;padding:11px 18px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.modal-btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
+.modal-btn.primary:hover{opacity:.88;transform:translateY(-1px)}
+.modal-btn.ghost{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--border)}
+.modal-btn.ghost:hover{background:rgba(255,255,255,.13)}
+
+/* ── SEARCH MODAL ── */
+.search-modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);display:none;flex-direction:column;align-items:center;padding:80px 20px 20px}
+.search-modal.open{display:flex}
+.search-big{display:flex;align-items:center;gap:10px;background:var(--s1);border:2px solid var(--acc);border-radius:14px;padding:14px 20px;width:100%;max-width:600px;margin-bottom:28px}
+.search-big input{background:none;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.1rem;flex:1}
+.search-big input::placeholder{color:var(--muted)}
+.search-results{width:100%;max-width:600px;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+
+/* ── WA FLOAT ── */
+.wa-float{position:fixed;bottom:28px;right:28px;z-index:400;background:var(--green);border-radius:50%;width:58px;height:58px;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 28px rgba(37,211,102,.4);transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s}
+.wa-float:hover{transform:scale(1.12);box-shadow:0 12px 36px rgba(37,211,102,.6)}
+.wa-ring{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(37,211,102,.35);animation:waring 2.2s ease-out infinite}
+@keyframes waring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.55);opacity:0}}
+
+/* ── FOOTER ── */
+footer{background:var(--s1);border-top:1px solid var(--border);padding:44px 32px 28px}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px}
+.foot-brand .logo{font-size:2rem;margin-bottom:10px;display:block}
+.foot-brand p{font-size:.82rem;color:var(--muted);line-height:1.65;max-width:240px}
+.foot-col h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:14px;font-weight:600}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-col ul a,.foot-col ul span{color:rgba(242,240,252,.65);font-size:.84rem;text-decoration:none;cursor:pointer;transition:color .18s}
+.foot-col ul a:hover,.foot-col ul span:hover{color:var(--acc)}
+.wa-link{color:var(--green)!important;display:flex;align-items:center;gap:6px}
+.wa-link:hover{color:#1ebc5b!important}
+.foot-bottom{border-top:1px solid var(--border);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;gap:12px}
+.foot-left{display:flex;flex-direction:column;gap:4px}
+.foot-copy{font-size:.76rem;color:var(--muted)}
+.foot-dev{font-size:.72rem;color:var(--acc);font-family:'Space Mono',monospace;letter-spacing:.04em}
+.foot-dev strong{color:var(--gold)}
+.foot-badges{display:flex;gap:8px;flex-wrap:wrap}
+.fbadge{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.68rem;font-family:'Space Mono',monospace;color:var(--muted)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:12px 22px;font-size:.84rem;color:var(--text);z-index:600;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:0 16px}
+  .nav-links{display:none}
+  .search-wrap{display:none}
+  .hero{padding:50px 16px 60px}
+  section{padding:36px 16px}
+  .perks{padding:0 16px;margin:36px 0 32px}
+  .cats{padding:0 16px}
+  .hero-pills{display:none}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:24px}
+  footer{padding:36px 16px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="scrollTo(0,0)">YOB<b>I</b>H</div>
+  <ul class="nav-links">
+    <li><a class="active" onclick="showPage('home',this)">Home</a></li>
+    <li><a onclick="showPage('movies',this)">Movies</a></li>
+    <li><a onclick="showPage('tvshows',this)">TV Shows</a></li>
+    <li><a onclick="showPage('anime',this)">Anime</a></li>
+    <li><a onclick="showPage('live',this)">Live TV</a></li>
+    <li><a onclick="showPage('top',this)">Top IMDB</a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search titles…" id="searchInput" oninput="handleSearch(this.value)" onclick="openSearch()">
+    </div>
+    <button class="btn-signin" onclick="openModal('signin')">Sign In</button>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span class="tdot"></span><strong>#1</strong> Oppenheimer</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#2</strong> Dune: Part Two</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#3</strong> Poor Things</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#4</strong> The Bear S3</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#5</strong> Shogun 2024</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>NEW</strong> Fallout S2</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>4K</strong> Civil War</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#1</strong> Oppenheimer</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#2</strong> Dune: Part Two</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#3</strong> Poor Things</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#4</strong> The Bear S3</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>#5</strong> Shogun 2024</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>NEW</strong> Fallout S2</span>
+    <span class="ticker-item"><span class="tdot"></span><strong>4K</strong> Civil War</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-poster-svg" viewBox="0 0 1400 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <radialGradient id="hg1" cx="60%" cy="40%"><stop offset="0%" stop-color="#3d0a14"/><stop offset="100%" stop-color="#060608"/></radialGradient>
+      <radialGradient id="hg2" cx="30%" cy="70%"><stop offset="0%" stop-color="#0a0a1f"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+    </defs>
+    <rect width="1400" height="800" fill="url(#hg1)"/>
+    <rect width="1400" height="800" fill="url(#hg2)" opacity=".7"/>
+    <circle cx="900" cy="200" r="300" fill="rgba(255,60,95,.06)"/>
+    <circle cx="1100" cy="500" r="200" fill="rgba(255,140,66,.05)"/>
+    <line x1="0" y1="400" x2="1400" y2="400" stroke="rgba(255,255,255,.02)" stroke-width="1"/>
+    <line x1="700" y1="0" x2="700" y2="800" stroke="rgba(255,255,255,.02)" stroke-width="1"/>
+  </svg>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="live-dot"></span> Free Streaming</div>
+    <h1>WATCH <em>FREE</em><br>STREAM BIG</h1>
+    <p>Thousands of movies and TV shows in HD & 4K. No subscription, no credit card — just click and watch instantly.</p>
+    <div class="hero-btns">
+      <button class="btn-play" onclick="openModal('watch')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Watch Now
+      </button>
+      <button class="btn-browse" onclick="scrollToSection()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Browse All
+      </button>
+    </div>
+    <div class="hero-numbers">
+      <div class="hnum"><strong>50K+</strong><span>Titles</span></div>
+      <div class="hnum"><strong>4K</strong><span>Quality</span></div>
+      <div class="hnum"><strong>FREE</strong><span>Always</span></div>
+      <div class="hnum"><strong>60+</strong><span>Subtitles</span></div>
+    </div>
+  </div>
+  <div class="hero-pills">
+    <div class="pill"><span class="pi">⚡</span><div><strong>Zero Buffering</strong><small>Fast global CDN</small></div></div>
+    <div class="pill"><span class="pi">🌍</span><div><strong>130+ Countries</strong><small>Available worldwide</small></div></div>
+  </div>
+</div>
+
+<!-- PERKS -->
+<div class="perks" id="browse">
+  <div class="perk"><div class="perk-icon">⚡</div><div class="perk-text"><strong>Lightning Fast</strong><small>CDN-powered servers</small></div></div>
+  <div class="perk"><div class="perk-icon">🎬</div><div class="perk-text"><strong>4K Ultra HD</strong><small>Crystal clear picture</small></div></div>
+  <div class="perk"><div class="perk-icon">📱</div><div class="perk-text"><strong>Any Device</strong><small>TV · Phone · Tablet</small></div></div>
+  <div class="perk"><div class="perk-icon">🔓</div><div class="perk-text"><strong>No Sign-Up</strong><small>Just click and watch</small></div></div>
+  <div class="perk"><div class="perk-icon">🌐</div><div class="perk-text"><strong>60+ Subtitles</strong><small>All major languages</small></div></div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="cats" id="catRow">
+  <button class="cat on" onclick="filterCat(this,'All')">All</button>
+  <button class="cat" onclick="filterCat(this,'Action')">Action</button>
+  <button class="cat" onclick="filterCat(this,'Comedy')">Comedy</button>
+  <button class="cat" onclick="filterCat(this,'Drama')">Drama</button>
+  <button class="cat" onclick="filterCat(this,'Horror')">Horror</button>
+  <button class="cat" onclick="filterCat(this,'Sci-Fi')">Sci-Fi</button>
+  <button class="cat" onclick="filterCat(this,'Romance')">Romance</button>
+  <button class="cat" onclick="filterCat(this,'Thriller')">Thriller</button>
+  <button class="cat" onclick="filterCat(this,'Animation')">Animation</button>
+  <button class="cat" onclick="filterCat(this,'Crime')">Crime</button>
+  <button class="cat" onclick="filterCat(this,'Fantasy')">Fantasy</button>
+</div>
+
+<!-- TRENDING NOW -->
+<section>
+  <div class="sec-head">
+    <div class="sec-title">🔥 Trending <span>Now</span></div>
+    <span class="see-all" onclick="showToast('Loading all trending titles…')">View All →</span>
+  </div>
+  <div class="row-wrap">
+    <div class="cards-row" id="trendingRow"></div>
+  </div>
+</section>
+
+<!-- FEATURED TV -->
+<section>
+  <div class="sec-head">
+    <div class="sec-title">📺 Featured <span>TV Shows</span></div>
+    <span class="see-all" onclick="showToast('Loading all TV Shows…')">View All →</span>
+  </div>
+  <div class="feat-row" id="featuredRow"></div>
+</section>
+
+<!-- GENRES -->
+<section>
+  <div class="sec-head">
+    <div class="sec-title">🎭 Browse by <span>Genre</span></div>
+  </div>
+  <div class="genre-grid" id="genreGrid"></div>
+</section>
+
+<!-- LIVE TV -->
+<section>
+  <div class="sec-head">
+    <div class="sec-title"><span class="live-dot" style="display:inline-block;margin-right:8px"></span>Live <span>Channels</span></div>
+    <span class="see-all" onclick="showToast('Loading all live channels…')">All Channels →</span>
+  </div>
+  <div class="live-strip" id="liveRow"></div>
+</section>
+
+<!-- TOP IMDB -->
+<section>
+  <div class="sec-head">
+    <div class="sec-title">⭐ Top IMDB <span>Picks</span></div>
+    <span class="see-all" onclick="showToast('Loading IMDB Top 250…')">Full List →</span>
+  </div>
+  <div class="row-wrap">
+    <div class="cards-row" id="imdbRow"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <span class="logo">YOB<b>I</b>H</span>
+      <p>Your ultimate free streaming destination. Movies, TV shows & anime in HD & 4K — no cost, no limits, no nonsense.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><span onclick="showPage('movies',null)">Movies</span></li>
+        <li><span onclick="showPage('tvshows',null)">TV Series</span></li>
+        <li><span onclick="showPage('anime',null)">Anime</span></li>
+        <li><span onclick="showPage('live',null)">Live TV</span></li>
+        <li><span onclick="showPage('top',null)">Top IMDB</span></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Genres</h4>
+      <ul>
+        <li><span onclick="filterCat(null,'Action')">Action</span></li>
+        <li><span onclick="filterCat(null,'Comedy')">Comedy</span></li>
+        <li><span onclick="filterCat(null,'Drama')">Drama</span></li>
+        <li><span onclick="filterCat(null,'Horror')">Horror</span></li>
+        <li><span onclick="filterCat(null,'Sci-Fi')">Sci-Fi</span></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Contact & Info</h4>
+      <ul>
+        <li><span onclick="showToast('Opening Help Center…')">Help Center</span></li>
+        <li><span onclick="showToast('DMCA page loading…')">DMCA</span></li>
+        <li><span onclick="showToast('Privacy Policy loading…')">Privacy Policy</span></li>
+        <li><span onclick="showToast('Terms of Use loading…')">Terms of Use</span></li>
+        <li>
+          <a class="wa-link" href="https://wa.me/254743436105" target="_blank">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp Us
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div class="foot-left">
+      <span class="foot-copy">© 2025 YOBIH. All Rights Reserved.</span>
+      <span class="foot-dev">⚡ Created by <strong>Dev Mungai</strong> · YOBIH</span>
+    </div>
+    <div class="foot-badges">
+      <span class="fbadge">4K HDR</span>
+      <span class="fbadge">HD 1080p</span>
+      <span class="fbadge">NO ADS</span>
+      <span class="fbadge">FREE</span>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a class="wa-float" href="https://wa.me/254743436105" target="_blank" title="Chat with Dev Mungai on WhatsApp">
+  <span class="wa-ring"></span>
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="closeModalBg(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle">Watch <span>Now</span></h2>
+    <p id="modalBody">Choose a server to start streaming instantly. No account required.</p>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal" onclick="closeSearchBg(event)">
+  <div class="search-big">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Search movies, shows, anime…" id="searchModalInput" oninput="handleSearch(this.value)" autofocus>
+    <button onclick="closeSearch()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;">✕</button>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──
+const MOVIES = [
+  {id:1,title:'Oppenheimer',year:2023,rating:8.5,genre:'Drama',badge:'hd',badgeText:'4K',color:['#1a0800','#3d1500']},
+  {id:2,title:'Dune: Part Two',year:2024,rating:8.7,genre:'Sci-Fi',badge:'hd',badgeText:'HD',color:['#0a0d1a','#1a2040']},
+  {id:3,title:'Poor Things',year:2023,rating:7.8,genre:'Comedy',badge:'new',badgeText:'NEW',color:['#100a1a','#22113d']},
+  {id:4,title:'Civil War',year:2024,rating:7.5,genre:'Action',badge:'hd',badgeText:'4K',color:['#0a1200','#1a2800']},
+  {id:5,title:'Saltburn',year:2023,rating:7.6,genre:'Thriller',badge:'hd',badgeText:'HD',color:['#120010','#2c0028']},
+  {id:6,title:'Anyone But You',year:2023,rating:6.3,genre:'Romance',badge:'new',badgeText:'NEW',color:['#1a0a00','#3d2200']},
+  {id:7,title:'Challengers',year:2024,rating:7.5,genre:'Drama',badge:'hd',badgeText:'HD',color:['#001a10','#003d24']},
+  {id:8,title:'Madame Web',year:2024,rating:4.3,genre:'Action',badge:'cam',badgeText:'HD',color:['#00101a','#00243d']},
+];
+
+const IMDB = [
+  {id:9,title:'Killers of Flower Moon',year:2023,rating:7.7,genre:'Crime',badge:'hd',badgeText:'4K',color:['#1a0a00','#3d2200']},
+  {id:10,title:'Past Lives',year:2023,rating:7.9,genre:'Romance',badge:'hd',badgeText:'HD',color:['#000d1a','#001f3d']},
+  {id:11,title:'Zone of Interest',year:2023,rating:7.3,genre:'Drama',badge:'hd',badgeText:'HD',color:['#0d0d00','#262600']},
+  {id:12,title:'American Fiction',year:2023,rating:7.5,genre:'Comedy',badge:'new',badgeText:'NEW',color:['#001a0d','#003d1e']},
+  {id:13,title:'Ferrari',year:2023,rating:6.9,genre:'Drama',badge:'hd',badgeText:'HD',color:['#1a0000','#3d0000']},
+  {id:14,title:'The Holdovers',year:2023,rating:7.9,genre:'Comedy',badge:'hd',badgeText:'HD',color:['#001010','#002626']},
+  {id:15,title:'May December',year:2023,rating:7.0,genre:'Drama',badge:'hd',badgeText:'HD',color:['#0d001a','#1f003d']},
+  {id:16,title:'Napoleon',year:2023,rating:6.7,genre:'Action',badge:'hd',badgeText:'4K',color:['#1a1000','#3d2600']},
+];
+
+const SHOWS = [
+  {id:20,title:'The Bear',genre:'Drama · Crime',sub:'S3 Available',rating:8.9,year:2024,colors:['#1a0500','#3d1000','#1a0000']},
+  {id:21,title:'Shogun',genre:'Action · History',sub:'Full Series',rating:8.8,year:2024,colors:['#0a0010','#1a0028','#0f0020']},
+  {id:22,title:'Fallout',genre:'Sci-Fi · Adventure',sub:'S2 Upcoming',rating:8.5,year:2024,colors:['#001a00','#003d00','#001a00']},
+];
+
+const GENRES = [
+  {name:'Action',icon:'💥',count:'4,820',bg:'linear-gradient(135deg,#1a0808,#3d1010)'},
+  {name:'Comedy',icon:'😂',count:'3,540',bg:'linear-gradient(135deg,#081a08,#103d10)'},
+  {name:'Sci-Fi',icon:'🚀',count:'2,110',bg:'linear-gradient(135deg,#08081a,#10103d)'},
+  {name:'Horror',icon:'🔪',count:'1,890',bg:'linear-gradient(135deg,#1a0810,#3d1028)'},
+  {name:'Drama',icon:'🎭',count:'5,300',bg:'linear-gradient(135deg,#1a1200,#3d2c00)'},
+  {name:'Romance',icon:'💕',count:'2,740',bg:'linear-gradient(135deg,#001a1a,#003d3d)'},
+  {name:'Thriller',icon:'🕵️',count:'2,200',bg:'linear-gradient(135deg,#10001a,#28003d)'},
+  {name:'Anime',icon:'🎌',count:'6,500',bg:'linear-gradient(135deg,#001a10,#003d24)'},
+];
+
+const CHANNELS = [
+  {name:'NEWS 24',icon:'📡'},{name:'FILM+',icon:'🎬'},{name:'SPORT TV',icon:'⚽'},
+  {name:'MUSIC HD',icon:'🎵'},{name:'WORLD',icon:'🌍'},{name:'KIDS',icon:'👶'},
+  {name:'GAME TV',icon:'🎮'},{name:'CINEMA',icon:'🍿'},{name:'NATURE',icon:'🔬'},
+  {name:'ARTS HD',icon:'🎨'},{name:'MOTORS',icon:'🚗'},{name:'FIGHT TV',icon:'🥊'},
+];
+
+// ── POSTER SVG generator ──
+function makePoster(c1,c2,title,w,h){
+  const letters = title.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="pg${Math.random().toString(36).slice(2)}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${c1}"/>
+        <stop offset="100%" stop-color="${c2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" fill="${c1}"/>
+    <rect width="${w}" height="${h}" fill="${c2}" opacity=".6"/>
+    <circle cx="${w*.6}" cy="${h*.35}" r="${h*.3}" fill="rgba(255,255,255,.03)"/>
+    <circle cx="${w*.2}" cy="${h*.8}" r="${h*.2}" fill="rgba(255,255,255,.02)"/>
+    <text x="${w/2}" y="${h/2+14}" text-anchor="middle" fill="rgba(255,255,255,.12)" font-family="serif" font-size="${h*.45}" font-weight="900">${letters}</text>
+    <rect x="0" y="${h*.7}" width="${w}" height="${h*.3}" fill="rgba(0,0,0,.5)"/>
+  </svg>`;
+}
+
+function makeWidePoster(colors, title){
+  const [c1,c2,c3] = colors;
+  return `<svg viewBox="0 0 480 270" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block">
+    <defs>
+      <linearGradient id="wg_${title.replace(/\s/g,'')}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${c1}"/>
+        <stop offset="60%" stop-color="${c2}"/>
+        <stop offset="100%" stop-color="${c3}"/>
+      </linearGradient>
+    </defs>
+    <rect width="480" height="270" fill="url(#wg_${title.replace(/\s/g,'')})"/>
+    <circle cx="380" cy="80" r="120" fill="rgba(255,255,255,.04)"/>
+    <circle cx="60" cy="220" r="80" fill="rgba(255,255,255,.03)"/>
+    <line x1="0" y1="135" x2="480" y2="135" stroke="rgba(255,255,255,.03)" stroke-width="1"/>
+  </svg>`;
+}
+
+// ── RENDER CARDS ──
+function renderCard(m){
+  const svg = makePoster(m.color[0], m.color[1], m.title, 158, 236);
+  return `<div class="card" onclick="openModal('watch','${m.title}')">
+    <div class="card-poster">
+      ${svg}
+      <div class="card-play-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    </div>
+    <div class="card-overlay">
+      <div class="ctitle">${m.title}</div>
+      <div class="cmeta"><span class="crating">★ ${m.rating}</span><span>${m.year}</span></div>
+    </div>
+    <div class="cbadge ${m.badge}">${m.badgeText}</div>
+  </div>`;
+}
+
+function renderFeatured(s){
+  const svg = makeWidePoster(s.colors, s.title);
+  return `<div class="feat-card" onclick="openModal('watch','${s.title}')">
+    ${svg}
+    <div class="feat-over">
+      <div class="feat-genre">${s.genre}</div>
+      <div class="feat-title">${s.title}</div>
+      <div class="feat-meta"><span>${s.sub}</span><span>★ ${s.rating}</span><span>${s.year}</span></div>
+    </div>
+    <div class="feat-play"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+  </div>`;
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('trendingRow').innerHTML = MOVIES.map(renderCard).join('');
+  document.getElementById('imdbRow').innerHTML = IMDB.map(renderCard).join('');
+  document.getElementById('featuredRow').innerHTML = SHOWS.map(renderFeatured).join('');
+  document.getElementById('genreGrid').innerHTML = GENRES.map(g=>`
+    <div class="genre-tile" style="background:${g.bg}" onclick="filterCat(null,'${g.name}')">
+      <span class="g-icon">${g.icon}</span>
+      <span class="g-name">${g.name}</span>
+      <span class="g-count">${g.count} titles</span>
+    </div>`).join('');
+  document.getElementById('liveRow').innerHTML = CHANNELS.map(c=>`
+    <div class="chan" onclick="openModal('live','${c.name}')">
+      <div class="chan-logo">${c.icon}</div>
+      <span class="chan-name">${c.name}</span>
+    </div>`).join('');
+});
+
+// ── NAV PAGES ──
+function showPage(page, el){
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const labels = {movies:'Movies',tvshows:'TV Shows',anime:'Anime',live:'Live TV',top:'Top IMDB',home:'Home'};
+  showToast(`Loading ${labels[page] || page}…`);
+  scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CATEGORIES ──
+function filterCat(btn, cat){
+  if(btn){
+    document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+  }
+  showToast(`Filtering: ${cat}`);
+  const el = document.getElementById('browse');
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+
+// ── SCROLL ──
+function scrollToSection(){
+  document.getElementById('browse').scrollIntoView({behavior:'smooth'});
+}
+
+// ── MODAL ──
+function openModal(type, title=''){
+  const m = document.getElementById('modal');
+  const t = document.getElementById('modalTitle');
+  const b = document.getElementById('modalBody');
+  const a = document.getElementById('modalActions');
+
+  if(type==='watch'){
+    t.innerHTML = title ? `Watch <span>${title}</span>` : 'Watch <span>Now</span>';
+    b.textContent = 'Choose a streaming server. All servers are free and require no account.';
+    a.innerHTML = `
+      <button class="modal-btn primary" onclick="showToast('Connecting to Server 1…');closeModal()">▶ Server 1 — HD</button>
+      <button class="modal-btn primary" onclick="showToast('Connecting to Server 2…');closeModal()">▶ Server 2 — 4K</button>
+      <button class="modal-btn ghost" onclick="closeModal()">Cancel</button>`;
+  } else if(type==='signin'){
+    t.innerHTML = 'Sign <span>In</span>';
+    b.textContent = 'YOBIH is 100% free — no account needed to watch. Create an account to save your watchlist.';
+    a.innerHTML = `
+      <button class="modal-btn primary" onclick="showToast('Account feature coming soon!');closeModal()">Create Account</button>
+      <button class="modal-btn ghost" onclick="closeModal()">Watch Without Account</button>`;
+  } else if(type==='live'){
+    t.innerHTML = `Live <span>${title}</span>`;
+    b.textContent = 'Tune in to this live channel. Stream is free and starts instantly.';
+    a.innerHTML = `
+      <button class="modal-btn primary" onclick="showToast('Tuning in to ${title}…');closeModal()">📡 Watch Live</button>
+      <button class="modal-btn ghost" onclick="closeModal()">Cancel</button>`;
+  }
+  m.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function closeModalBg(e){
+  if(e.target===document.getElementById('modal')) closeModal();
+}
+
+// ── SEARCH ──
+function openSearch(){
+  document.getElementById('searchModal').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('searchModalInput').focus(),100);
+}
+
+function closeSearch(){
+  document.getElementById('searchModal').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('searchResults').innerHTML='';
+  document.getElementById('searchModalInput').value='';
+}
+
+function closeSearchBg(e){
+  if(e.target===document.getElementById('searchModal')) closeSearch();
+}
+
+function handleSearch(val){
+  const all = [...MOVIES,...IMDB];
+  const results = val.length>1 ? all.filter(m=>m.title.toLowerCase().includes(val.toLowerCase())) : [];
+  const el = document.getElementById('searchResults');
+  if(!results.length && val.length>1){
+    el.innerHTML='<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:20px">No results found</p>';
+    return;
+  }
+  el.innerHTML = results.map(m=>`
+    <div class="card" style="width:100%" onclick="openModal('watch','${m.title}');closeSearch()">
+      <div class="card-poster" style="height:180px">${makePoster(m.color[0],m.color[1],m.title,160,180)}</div>
+      <div class="card-overlay">
+        <div class="ctitle">${m.title}</div>
+        <div class="cmeta"><span class="crating">★ ${m.rating}</span><span>${m.year}</span></div>
+      </div>
+      <div class="cbadge ${m.badge}">${m.badgeText}</div>
+    </div>`).join('');
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){closeModal();closeSearch();}
+  if(e.key==='/'&&!document.getElementById('searchModal').classList.contains('open')){e.preventDefault();openSearch();}
+});
+</script>
+</body>
+</html>
